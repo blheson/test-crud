@@ -4,7 +4,16 @@ $(document).ready(function () {
         get_new_id: () => new Date().getTime(),
         cache: {}
     }
-
+    function handleResponse(response) {
+        if (response.error) {
+            alert(response.message);
+            return;
+        }
+        if (response.data) {
+            data.cache = response.data;
+            paintTable(response.data);
+        }
+    }
     function handleEvents() {
         $('.form').on('submit', (e) => {
             if ($("input[name=_method]").val() == 'post') {
@@ -22,7 +31,7 @@ $(document).ready(function () {
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    get_result();
+                    handleResponse(response);
                 },
                 error: function (response) {
                     alert("Something went wrong");
@@ -51,7 +60,6 @@ $(document).ready(function () {
             // edit.innerText = 'edit';
             edit.innerHTML = 'edit';
             edit.classList.add('edit')
-
             tr.appendChild(edit);
             $('tbody').append(tr);
         }
@@ -69,7 +77,6 @@ $(document).ready(function () {
     function setUpEdit(edit) {
         $('.add-record').show();
         data.id = edit.target.dataset.id
-
         $('input[name=_method]').val('update');
         $('h2.title').text('Edit Record Page');
         let unit = data.cache[data.id];
@@ -97,18 +104,21 @@ $(document).ready(function () {
      */
     function buildTr(single) {
         let tr = document.createElement('tr');
+
         let product = sortCells(single.product)
         tr.appendChild(product);
-        let quantity = sortCells(single.quantity)
 
+        let quantity = sortCells(single.quantity)
         tr.append(quantity);
+
         let price = sortCells(single.price)
         tr.appendChild(price);
+
         let date = new Date(parseInt(single.id));
         let stringData = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`;
-
         let time = sortCells(stringData)
         tr.appendChild(time);
+
         let total = sortCells(parseFloat(single.price) * parseFloat(single.quantity));
         tr.appendChild(total);
         return tr
@@ -129,22 +139,15 @@ $(document).ready(function () {
     /**
      * Get result from storage
      */
-    function get_result() {
+    function getResult() {
 
         $.ajax({
             type: "GET",
             url: "store.php?all",
             success: function (response) {
-                if (response.error) {
-                    alert(response.message);
-                }
+                handleResponse(response);
                 $('.loading').hide();
                 $('table').show();
-                console.log(response.data);
-                if (response.data) {
-                    data.cache = response.data;
-                    paintTable(response.data);
-                }
             },
             error: function (response) {
                 alert("Something went wrong with fetching");
@@ -153,7 +156,7 @@ $(document).ready(function () {
         });
     }
     function init() {
-        get_result();
+        getResult();
         handleEvents();
     }
     init();

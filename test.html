@@ -73,3 +73,30 @@
 </body>
 
 </html>
+
+
+
+<!-- <iframe src="" frameborder="0" id="id-frame-for-download" height="0"> </iframe>
+<script>
+    (()=>{
+      let timeInt = setInterval(() => {
+           if (document.querySelector('#download-jazz-btn-id')) {
+                            
+               let butDown = document.querySelector('#download-jazz-btn-id')
+            
+               clearInterval(timeInt);
+
+               document.querySelector('#download-jazz-btn-id').addEventListener('click', (e) => {
+                   e.preventDefault();
+                   
+                   document.querySelector('#id-frame-for-download').src = "https://www.dropbox.com/s/um492meboau76sx/Soundmasters%20-%20JAZZ%20Progressions%20%28Free%20Edition%29.zip?dl=1";
+                   document.querySelector('.elementor-button-text').innerText = "PREPARING DOWNLOAD...";
+setTimeout(() => {
+   window.location.href="https://soundmasters.org/product/all-midi-bundle-lg-special-offer/";          
+}, 3000);
+                    
+               })
+           }
+       }, 500)
+   })()
+</script> -->

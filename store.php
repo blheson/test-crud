@@ -27,7 +27,7 @@ function getRoute()
  */
 function prepareResult()
 {
-    $result = get_all_contents();
+    $result = getAllContents();
     $decoded = trim($result) == '' ?
         [] :  json_decode($result);
 
@@ -38,26 +38,28 @@ function prepareResult()
  */
 function postRoute($post)
 {
-    $result = get_all_contents();
+    header('Content-type: application/json');
+    $result = getAllContents();
     $old = json_decode($result, true);
-    is_array($old) ? createUpdate($post, $old) : save(array($post['id'] => $post));
+    $encoded =    is_array($old) ? createUpdate($post, $old) : save(array($post['id'] => $post));
+    printf('%s', json_encode(array('status' => 'success', 'data' => $encoded)));
 }
 /**
  * Create/Update Storage
  * @param array $post - Posted data from form
  * @param array $old - Data from storage
- * @return void
+ * @return object
  */
 function createUpdate($post, $old)
 {
     $old[$post['id']] = $post;
-    save($old);
+    return save($old);
 }
 /**
  * Get content from storage
  * @return string|false
  */
-function get_all_contents()
+function getAllContents()
 {
     return file_get_contents("store.json");
 }
@@ -70,4 +72,5 @@ function save($data)
 {
     $encoded = json_encode($data);
     file_put_contents("store.json", $encoded);
+    return $data;
 }
